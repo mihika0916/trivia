@@ -1,186 +1,167 @@
 //
-//  TriviaViewController.swift
+//  ViewController.swift
 //  Trivia
 //
-//  Created by Mihika Sharma on 17/02/24.
+//  Created by Mari Batilando on 4/6/23.
 //
 
 import UIKit
 
-class TriviaViewController: UIViewController {
-    private var allquizquestions = [QuizQuestion]()
-    private var selectedQuestion = 0
-    private var score = 0
-    
-    @IBOutlet weak var questionType: UILabel!
-    
-    @IBOutlet weak var questionNumber: UILabel!
-    
-    @IBOutlet weak var questionLabel: UILabel!
-    
-    @IBOutlet weak var Option1: UIButton!
-    
-    @IBOutlet weak var Option2: UIButton!
-    
-    @IBOutlet weak var Option3: UIButton!
-    @IBOutlet weak var Option4: UIButton!
-    
-    
-    
-    @IBAction func optionClicked(_ sender: UIButton) {
-        let selectedOptionIndex = sender.tag
-            let currentQuestion = allquizquestions[selectedQuestion]
 
-            
-            if currentQuestion.isCorrect(option: currentQuestion.options[selectedOptionIndex]) {
-                // Increase the score by 1 if the answer is correct
-                score += 1
-                //sender.backgroundColor = .systemGreen // Visual feedback for correct answer
-                
-                
-            } else {
-                //sender.backgroundColor = .systemRed // Visual feedback for incorrect answer
-                
-            }
-        showNextQuestionOrScore()
-    }
+class TriviaViewController: UIViewController {
+  
+  @IBOutlet weak var currentQuestionNumberLabel: UILabel!
+  @IBOutlet weak var questionContainerView: UIView!
+  @IBOutlet weak var questionLabel: UILabel!
+  @IBOutlet weak var categoryLabel: UILabel!
+  @IBOutlet weak var answerButton0: UIButton!
+  @IBOutlet weak var answerButton1: UIButton!
+  @IBOutlet weak var answerButton2: UIButton!
+  @IBOutlet weak var answerButton3: UIButton!
+  
+  private var questions = [TriviaQuestion]()
+  private var currQuestionIndex = 0
+  private var numCorrectQuestions = 0
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    addGradient()
+    questionContainerView.layer.cornerRadius = 8.0
+    // TODO: FETCH TRIVIA QUESTIONS HERE
+      setupDummyQuestions()
+      //getTriviaQuestions()
+      fetchTriviaQuestions()
+  }
     
-    
-    
-    @IBAction func didClickOption1(_ sender: UIButton) {
+    private func setupDummyQuestions() {
+        // Dummy questions
+        let question1 = TriviaQuestion(type: "General Knowledge", difficulty: "easy",
+                                       categoryRaw: "Paris",
+                                       questionRaw: "What is the capital of France?",
+                                       correctAnswerRaw: "Berlin",
+                                       incorrectAnswersRaw: ["Berlin", "London", "Rome"])
         
+        // Add the dummy questions to the array
+        questions = [question1]
+        
+        // Update the UI with the first question
+        updateQuestion(withQuestionIndex: currQuestionIndex)
     }
+  
+  private func updateQuestion(withQuestionIndex questionIndex: Int) {
+    currentQuestionNumberLabel.text = "Question: \(questionIndex + 1)/\(questions.count)"
+    let question = questions[questionIndex]
+    configure(with: question)
     
-    @IBAction func didClickOption2(_ sender: UIButton) {
+  }
+    
+    private func configure (with question:TriviaQuestion) {
+        questionLabel.text = question.question
+        categoryLabel.text = question.category
+        let answers = ([question.correctAnswer] + question.incorrectAnswers).shuffled()
+//        if answers.count > 0 {
+//          answerButton0.setTitle(answers[0], for: .normal)
+//        }
+//        if answers.count > 1 {
+//          answerButton1.setTitle(answers[1], for: .normal)
+//          answerButton1.isHidden = false
+//        }
+//        if answers.count > 2 {
+//          answerButton2.setTitle(answers[2], for: .normal)
+//          answerButton2.isHidden = false
+//        }
+//        if answers.count > 3 {
+//          answerButton3.setTitle(answers[3], for: .normal)
+//          answerButton3.isHidden = false
+//        }
+        
+        let answerButtons = [answerButton0, answerButton1, answerButton2, answerButton3]
+           for button in answerButtons {
+               button?.setTitle("", for: .normal)
+               button?.isHidden = true
+           }
+
+           // Now, set the titles for the available answers and make sure those buttons are visible.
+           for (index, button) in answerButtons.enumerated() {
+               if index < answers.count {
+                   button?.setTitle(answers[index], for: .normal)
+                   button?.isHidden = false
+               }
+           }
     }
-    
-    
-    @IBAction func didClickOption3(_ sender: UIButton) {
+  
+  private func updateToNextQuestion(answer: String) {
+    if isCorrectAnswer(answer) {
+      numCorrectQuestions += 1
     }
-    
-    @IBAction func didClickOption4(_ sender: UIButton) {
+    currQuestionIndex += 1
+    guard currQuestionIndex < questions.count else {
+      showFinalScore()
+      return
     }
+    updateQuestion(withQuestionIndex: currQuestionIndex)
+  }
+  
+  private func isCorrectAnswer(_ answer: String) -> Bool {
+    return answer == questions[currQuestionIndex].correctAnswer
+  }
+  
+  private func showFinalScore() {
+    let alertController = UIAlertController(title: "Game over!",
+                                            message: "Final score: \(numCorrectQuestions)/\(questions.count)",
+                                            preferredStyle: .alert)
+    let resetAction = UIAlertAction(title: "Restart", style: .default) { [unowned self] _ in
+      currQuestionIndex = 0
+      numCorrectQuestions = 0
+        fetchTriviaQuestions()
+      //updateQuestion(withQuestionIndex: currQuestionIndex)
+    }
+    alertController.addAction(resetAction)
+    present(alertController, animated: true, completion: nil)
+  }
+  
+  private func addGradient() {
+    let gradientLayer = CAGradientLayer()
+    gradientLayer.frame = view.bounds
+    gradientLayer.colors = [UIColor(red: 0.54, green: 0.88, blue: 0.99, alpha: 1.00).cgColor,
+                            UIColor(red: 0.51, green: 0.81, blue: 0.97, alpha: 1.00).cgColor]
+    gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+    gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+    view.layer.insertSublayer(gradientLayer, at: 0)
+  }
     
-    private func showNextQuestionOrScore() {
-        if selectedQuestion < allquizquestions.count - 1 {
-            // There are more questions to display
-            selectedQuestion += 1
-            configure(with: allquizquestions[selectedQuestion])
-        } else {
-            // No more questions, show the score
-            let alert = UIAlertController(title: "Quiz Complete", message: "You've answered \(score) out of \(allquizquestions.count) questions correctly.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            
-            // Reset for a new round of questions if desired
-            alert.addAction(UIAlertAction(title: "Start Over", style: .default) { [weak self] _ in
-                self?.startNewQuizRound()
-            })
-            
-            present(alert, animated: true)
+    func fetchTriviaQuestions() {
+        let triviaService = TriviaService() // Initialize your TriviaService
+        triviaService.getTriviaQuestions { [weak self] (questions: [TriviaQuestion]?) in
+            // Ensure the operation returns to the main thread, as UI updates must be on the main thread
+            DispatchQueue.main.async {
+                guard let questions = questions, !questions.isEmpty else {
+                    // Handle error or empty questions case
+                    print("Failed to fetch questions or no questions fetched")
+                    return
+                }
+                self?.questions = questions
+                
+                print(questions)
+                // Update the UI with the first question
+                self?.updateQuestion(withQuestionIndex: 0)
+            }
         }
     }
-    
-    private func startNewQuizRound() {
-        score = 0
-        selectedQuestion = 0
-        configure(with: allquizquestions[selectedQuestion])
-    }
-    
-    
-    @IBAction func didClickBackButton(_ sender: UIButton) {
-        selectedQuestion = max(0, selectedQuestion - 1)
-        configure(with: allquizquestions[selectedQuestion])
-    }
-    
-    @IBAction func didClickNextButton(_ sender: UIButton) {
-        selectedQuestion = min(allquizquestions.count - 1, selectedQuestion + 1)
-        configure(with: allquizquestions[selectedQuestion])
-    }
-    
-//    @IBOutlet weak var Option2: UIButton!
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        allquizquestions = createMockData()
-        configure(with: allquizquestions[0])
-        // Do any additional setup after loading the view.
-        
-    }
-    
-    private func configure(with question: QuizQuestion) {
-        // Set the category and question text
-            questionType.text = question.category
-            questionLabel.text = question.question
-            
-            // Update the question number label
-            questionNumber.text = "Question \(selectedQuestion + 1)/\(allquizquestions.count)"
-
-            // Assuming you have four option buttons, we'll set the titles of these buttons.
-            // Also reset the appearance of the buttons for the new question
-            let optionButtons = [Option1, Option2, Option3, Option4]
-            for (index, button) in optionButtons.enumerated() {
-                if index < question.options.count {
-                    button?.setTitle(question.options[index], for: .normal)
-                    button?.isHidden = false
-                    button?.tag = index // Tag the button to identify it later
-                    button?.layer.cornerRadius = 10 // Optional, for rounded corners
-                    button?.backgroundColor = .systemBlue // Use your app's theme color
-                    button?.setTitleColor(.white, for: .normal)
-                } else {
-                    button?.isHidden = true // Hide the button if there are less than four options
-                }
-            }
-        
-    }
-    
-    
-    private func createMockData() -> [QuizQuestion] {
-        let mockData1 = QuizQuestion(
-            category: QuizCategory.science.description,
-            question: "Which element on the periodic table is represented by the symbol 'Au'?",
-            options: [
-                "Silver",
-                "Gold",
-                "Oxygen",
-                "Platinum"
-            ],
-            correctOptionIndex: 1
-        )
-        let mockData2 = QuizQuestion(
-            category: QuizCategory.history.description,
-            question: "Who was the first president of the United States?",
-            options: [
-                "Thomas Jefferson",
-                "Abraham Lincoln",
-                "George Washington",
-                "John Adams"
-            ],
-            correctOptionIndex: 2
-            )
-        let mockData3 = QuizQuestion(
-            category: QuizCategory.sports.description,
-            question: "In which year were the first modern Olympic Games held?",
-            options: [
-                "1896",
-                "1900",
-                "1912",
-                "1920"
-            ],
-            correctOptionIndex: 0
-        )
-        
-        let mockData4 = QuizQuestion(
-            category: "Tech",
-            question: "Which programming language was developed by Apple Inc. for iOS and OS X development?",
-            options: [
-                "Swift",
-                "Objective-C",
-                "Ruby",
-                "Java"
-            ],
-            correctOptionIndex: 0
-        )
-        return [mockData1, mockData2, mockData3]
-    }
-    
-
+  @IBAction func didTapAnswerButton0(_ sender: UIButton) {
+    updateToNextQuestion(answer: sender.titleLabel?.text ?? "")
+  }
+  
+  @IBAction func didTapAnswerButton1(_ sender: UIButton) {
+    updateToNextQuestion(answer: sender.titleLabel?.text ?? "")
+  }
+  
+  @IBAction func didTapAnswerButton2(_ sender: UIButton) {
+    updateToNextQuestion(answer: sender.titleLabel?.text ?? "")
+  }
+  
+  @IBAction func didTapAnswerButton3(_ sender: UIButton) {
+    updateToNextQuestion(answer: sender.titleLabel?.text ?? "")
+  }
 }
+
