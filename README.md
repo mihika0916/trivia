@@ -1,6 +1,4 @@
-# Project 3 - Trivia
-
-Submitted by: Mihika Sharma
+# Trivia
 
 Trivia is an app that allows a user to go through a series of questions and select the bets-fitting answer between four options. 
 
@@ -10,7 +8,7 @@ Trivia is an app that allows a user to go through a series of questions and sele
     </a>
   </div>
 
-Time spent: **1** hour spent in total
+
 
 ## Required Features
 
@@ -28,41 +26,14 @@ The following **optional** features are implemented:
 - [x] User can see how many questions they got correct after answering all questions
 - [x] User should be able to restart the game after they've finished answering all questions
 
-The following **additional** features are implemented:
-
-- [ ] List anything else that you can get done to improve the app functionality!
-
-## Video Walkthrough
-
-Here is a reminder on how to embed Loom videos on GitHub. Feel free to remove this reminder once you upload your README. 
-
-[Guide]](https://www.youtube.com/watch?v=GA92eKlYio4) .
-
-## Notes
-
-Describe any challenges encountered while building the app.
-
-## License
-
-    Copyright [yyyy] [name of copyright owner]
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
 
 
 
-# Project 4 - Trivia pt. 2
 
-Submitted by: Mihika Sharma
+
+
+# Trivia pt. 2
+
 
 Trivia is an app that fetches 10 random quiz questions via API call, consisting of various categories, difficulty levels and question types.
 
@@ -72,7 +43,6 @@ Trivia is an app that fetches 10 random quiz questions via API call, consisting 
     </a>
   </div>
 
-Time spent: 1 hours spent in total
 
 ## Required Features
 
@@ -91,30 +61,4 @@ The following **optional** features are implemented:
 - [ ] Allow the user to choose a specific category of questions.
 - [ ] Provide the user feedback on whether each question was correct before navigating to the next.
 
-The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
-
-
-
-## Notes
-
-Describe any challenges encountered while building the app.
-- Html to string formatting was required after fetching quiz questions via API.
-
-
-## License
-
-    Copyright [yyyy] [name of copyright owner]
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
